@@ -122,10 +122,28 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        // Build clickable source links as individual items
+        const sourceItems = sources.map((source) => {
+            // Check if source has a URL
+            if (source.url) {
+                // Create clickable link that opens in new tab
+                return `<div class="source-item">
+                    <span class="source-bullet">▸</span>
+                    <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(source.display_text)}</a>
+                </div>`;
+            } else {
+                // No link available, just show text
+                return `<div class="source-item">
+                    <span class="source-bullet">▸</span>
+                    <span class="source-text">${escapeHtml(source.display_text)}</span>
+                </div>`;
+            }
+        }).join('');
+
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${sourceItems}</div>
             </details>
         `;
     }
